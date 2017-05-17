@@ -1,0 +1,8 @@
+# Mac OS
+.DS_Store
+
+# Dependency
+node_modules/
+
+# Vscode intermediate storage
+.vscode
