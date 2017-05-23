@@ -59,6 +59,8 @@
 
 	var _lottery2 = _interopRequireDefault(_lottery);
 
+	__webpack_require__(305);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
@@ -8707,227 +8709,32 @@
 
 	'use strict';
 
-	__webpack_require__(300);
+	__webpack_require__(2);
 
-	__webpack_require__(301);
+	var _base = __webpack_require__(300);
 
-	__webpack_require__(302);
+	var _base2 = _interopRequireDefault(_base);
 
-	__webpack_require__(303);
+	var _timer = __webpack_require__(302);
+
+	var _timer2 = _interopRequireDefault(_timer);
+
+	var _calculate = __webpack_require__(303);
+
+	var _calculate2 = _interopRequireDefault(_calculate);
+
+	var _interface = __webpack_require__(304);
+
+	var _interface2 = _interopRequireDefault(_interface);
+
+	var _jquery = __webpack_require__(301);
+
+	var _jquery2 = _interopRequireDefault(_jquery);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
 /* 300 */
-/***/ (function(module, exports) {
-
-	"use strict";
-
-/***/ }),
-/* 301 */
-/***/ (function(module, exports) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	var Timer = function () {
-	    function Timer() {
-	        _classCallCheck(this, Timer);
-	    }
-
-	    _createClass(Timer, [{
-	        key: 'countdown',
-	        value: function countdown(end, update, handle) {
-	            var self = this,
-	                now = new Date().getTime();
-	            // 如果超出截止时间
-	            if (now - end) {
-	                handle.call(self);
-	            } else {
-	                var last_time = end - now; // 剩余时间
-	                // 时间单位
-	                var px_s = 1000;
-	                var px_m = px_s * 60;
-	                var px_h = px_m * 60;
-	                var px_d = px_h * 24;
-	                // 剩余时间转换
-	                var d = Math.floor(last_time / px_d);
-	                var h = Math.floor((last_time - d * px_d) / px_h);
-	                var m = Math.floor((last_time - d * px_d - h * px_h) / px_m);
-	                var s = Math.floor((last_time - d * px_d - h * px_h - m * px_m) / px_s);
-	                var r = [];
-	                if (d > 0) {
-	                    r.push('<em>' + d + '</em>\u5929');
-	                }
-	                if (r.length || h > 0) {
-	                    r.push('<em>' + h + '</em>\u65F6');
-	                }
-	                if (r.length || m > 0) {
-	                    r.push('<em>' + m + '</em>\u5206');
-	                }
-	                if (r.length || s > 0) {
-	                    r.push('<em>' + s + '</em>\u79D2');
-	                }
-	                // 拼接输出语句
-	                self.last_time = r.join('');
-	                update.call(self, r.join(''));
-	                // 倒计时
-	                setTimeout(function () {
-	                    self.countdown(end, update, handle);
-	                }, 1000);
-	            }
-	        }
-	    }]);
-
-	    return Timer;
-	}();
-
-	exports.default = Timer;
-
-/***/ }),
-/* 302 */
-/***/ (function(module, exports) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	var Calculate = function () {
-	    function Calculate() {
-	        _classCallCheck(this, Calculate);
-	    }
-
-	    _createClass(Calculate, [{
-	        key: 'computeCount',
-
-	        /**
-	         * [computeCount 计算注数]
-	         * @param {number} active    [选中的号码]
-	         * @param {string} play_name [玩法标识]
-	         * @return {number} count    [注数]
-	         */
-	        value: function computeCount(active, play_name) {
-	            var count = 0;
-	            var exist = this.play_list.has(play_name);
-	            var arr = new Array(active).fill(0);
-
-	            if (exist && play_name.at(0) === 'r') {
-	                count = Calculate.combine(arr, play_name.split('')[1]); // combine是静态方法
-	            }
-	            return count;
-	        }
-
-	        /**
-	         * [computeBonus 奖金范围预测]
-	         * @param {number} active    [选中的号码]
-	         * @param {string} play_name [玩法标识]
-	         * @return {array}           [奖金范围]
-	         */
-
-	    }, {
-	        key: 'computeBonus',
-	        value: function computeBonus(active, play_name) {
-	            var self = this;
-	            var play = play_name.split('');
-	            var arr = new Array(play[1] * 1).fill(0);
-	            var min = void 0,
-	                max = void 0;
-	            if (play[0] === 'r') {
-	                var min_active = 5 - (11 - active); // 最少命中数
-	                if (min_active > 0) {
-	                    if (min_active - play[1] >= 0) {
-	                        arr = new Array(min_active).fill(0);
-	                        min = Calculate.combine(arr, play[1]).length; // combine返回的是数组，长度是注数
-	                    } else {
-	                        if (play[1] - 5 > 0 && active - play[1] >= 0) {
-	                            arr = new Array(active - 5).fill(0);
-	                            min = Calculate.combine(arr, play[1] - 5).length;
-	                        } else {
-	                            min = active - play[1] > -1 ? 1 : 0;
-	                        }
-	                    }
-	                } else {
-	                    min = active - play[1] > -1 ? 1 : 0;
-	                }
-
-	                var max_active = Math.min(active, 5);
-	                // 任选5以上
-	                if (play[1] - 5 > 0) {
-	                    if (active - play[1] >= 0) {
-	                        arr = new Array(active - 5).fill(0);
-	                        max = Calculate.combine(arr, play[1] - 5).length;
-	                    } else {
-	                        max = 0;
-	                    }
-	                } else if (play[1] - 5 < 0) {
-	                    // 任选5以下
-	                    arr = new Array(Math.min(active, 5)).fill(0);
-	                    max = Calculate.combine(arr, play[1]).length;
-	                } else {
-	                    // 任选5
-	                    max = 1;
-	                }
-	            }
-	            // 将注数转换为金额
-	            return [min, max].map(function (item) {
-	                return item * self.play_list.get(play_name).bonus;
-	            });
-	        }
-
-	        /**
-	         * [combine 组合运算]
-	         * @param {array} arr   [参与组合运算的数组]
-	         * @param {number} size [组合运算的基数]
-	         * @return {array}      [运算后的结果，数组长度就是计算注数]
-	         */
-
-	    }], [{
-	        key: 'combine',
-	        value: function combine(arr, size) {
-	            var allResult = [];
-
-	            (function f(arr, size, result) {
-	                var arrLen = arr.length;
-	                if (size > arrLen) {
-	                    return;
-	                }
-	                if (size === arrLen) {
-	                    allResult.push([].concat(result, arr));
-	                } else {
-	                    for (var i = 0; i < arrLen; i++) {
-	                        var newResult = [].concat(result);
-	                        newResult.push(arr[i]);
-	                        if (size === 1) {
-	                            allResult.push(newResult);
-	                        } else {
-	                            var newArr = [].concat(arr);
-	                            newArr.splice(0, i + 1);
-	                            f(newArr, size - 1, newResult);
-	                        }
-	                    }
-	                }
-	            })(arr, size, []);
-	        }
-	    }]);
-
-	    return Calculate;
-	}();
-
-	exports.default = Calculate;
-
-/***/ }),
-/* 303 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8936,9 +8743,11 @@
 	    value: true
 	});
 
+	var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _jquery = __webpack_require__(304);
+	var _jquery = __webpack_require__(301);
 
 	var _jquery2 = _interopRequireDefault(_jquery);
 
@@ -8946,97 +8755,362 @@
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var Interface = function () {
-	    function Interface() {
-	        _classCallCheck(this, Interface);
+	var Base = function () {
+	    function Base() {
+	        _classCallCheck(this, Base);
 	    }
 
-	    _createClass(Interface, [{
-	        key: 'getOmit',
+	    _createClass(Base, [{
+	        key: 'initPlayList',
 
 	        /**
-	         * [getOmit 获取遗漏数据]
-	         * @param {string} issue [当前期号]
+	         * [initPlayList 初始化奖金、玩法和说明]
+	         * 
 	         */
-	        value: function getOmit(issue) {
-	            var self = this;
-	            return new Promise(function (result, reject) {
-	                _jquery2.default.ajax({
-	                    url: '/get/omit',
-	                    data: {
-	                        issue: issue
-	                    },
-	                    dataType: 'json',
-	                    success: function success(res) {
-	                        self.setOmit(res.data);
-	                        resolve.call(self, res);
-	                    },
-	                    error: function error(err) {
-	                        reject.call(err);
-	                    }
-	                });
+	        value: function initPlayList() {
+	            this.play_list.set('r2', {
+	                bonus: 6, // 奖金
+	                tip: '从01～11中任选2个或多个号码，所选号码与开奖号码任意两个号码相同，即中奖<em class="red">6</em>元',
+	                name: '任二'
+	            }).set('r3', {
+	                bonus: 19,
+	                tip: '从01～11中任选3个或多个号码，选号与奖号任意三个号码相同，即中奖<em class="red">19</em>元',
+	                name: '任三'
+	            }).set('r4', {
+	                bonus: 78,
+	                tip: '从01～11中任选4个或多个号码，所选号码与开奖号码任意四个号码相同，即中奖<em class="red">78</em>元',
+	                name: '任四'
+	            }).set('r5', {
+	                bonus: 540,
+	                tip: '从01～11中任选5个或多个号码，所选号码与开奖号码相同，即中奖<em class="red">540</em>元',
+	                name: '任五'
+	            }).set('r6', {
+	                bonus: 90,
+	                tip: '从01～11中任选6个或多个号码，所选号码与开奖号码五个号码相同，即中奖<em class="red">90</em>元',
+	                name: '任六'
+	            }).set('r7', {
+	                bonus: 26,
+	                tip: '从01～11中任选7个或多个号码，选号与奖号五个号相同，即中奖<em class="red">26</em>元',
+	                name: '任七'
+	            }).set('r8', {
+	                bonus: 9,
+	                tip: '从01～11中任选8个或多个号码，选号与奖号五个号相同，即中奖<em class="red">9</em>元',
+	                name: '任八'
 	            });
 	        }
+
 	        /**
-	         * [getOpenCode 获取开奖号码]
-	         * @param {string} issue [当前期号]
+	         * [initNumber 初始化号码]
 	         */
 
 	    }, {
-	        key: 'getOpenCode',
-	        value: function getOpenCode(issue) {
-	            var self = this;
-	            return new Promise(function (result, reject) {
-	                _jquery2.default.ajax({
-	                    url: '/get/opencode',
-	                    data: {
-	                        issue: issue
-	                    },
-	                    dataType: 'json',
-	                    success: function success(res) {
-	                        self.setOpenCode(res.data);
-	                        resolve.call(self, res);
-	                    },
-	                    error: function error(err) {
-	                        reject.call(err);
-	                    }
-	                });
-	            });
+	        key: 'initNumber',
+	        value: function initNumber() {
+	            for (var i = 1; i < 12; i++) {
+	                this.number.add(('' + i).padStart(2, '0')); // 投注号码不能重复
+	            }
 	        }
+
 	        /**
-	         * [getOpenCode 获取当前状态]
-	         * @param {string} issue [当前期号]
+	         * [setOmit 设置遗漏数据]
+	         * @param {map} omit [遗漏数字]
 	         */
 
 	    }, {
-	        key: 'getState',
-	        value: function getState(issue) {
+	        key: 'setOmit',
+	        value: function setOmit(omit) {
 	            var self = this;
-	            return new Promise(function (result, reject) {
-	                _jquery2.default.ajax({
-	                    url: '/get/state',
-	                    data: {
-	                        issue: issue
-	                    },
-	                    dataType: 'json',
-	                    success: function success(res) {
-	                        resolve.call(self, res);
-	                    },
-	                    error: function error(err) {
-	                        reject.call(err);
+	            self.omit.clear();
+
+	            var _iteratorNormalCompletion = true;
+	            var _didIteratorError = false;
+	            var _iteratorError = undefined;
+
+	            try {
+	                for (var _iterator = omit.entries()[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	                    var _step$value = _slicedToArray(_step.value, 2),
+	                        index = _step$value[0],
+	                        item = _step$value[1];
+
+	                    self.omit.set(index, item);
+	                }
+	            } catch (err) {
+	                _didIteratorError = true;
+	                _iteratorError = err;
+	            } finally {
+	                try {
+	                    if (!_iteratorNormalCompletion && _iterator.return) {
+	                        _iterator.return();
+	                    }
+	                } finally {
+	                    if (_didIteratorError) {
+	                        throw _iteratorError;
+	                    }
+	                }
+	            }
+
+	            (0, _jquery2.default)(self.omit_el).each(function (index, item) {
+	                (0, _jquery2.default)(item).text(self.omit.get(index));
+	            });
+	        }
+
+	        /**
+	         * [setOpenCode 设置开奖]
+	         * @param {set} code [奖号]
+	         */
+
+	    }, {
+	        key: 'setOpenCode',
+	        value: function setOpenCode(code) {
+	            var self = this;
+	            self.open_code.clear();
+
+	            var _iteratorNormalCompletion2 = true;
+	            var _didIteratorError2 = false;
+	            var _iteratorError2 = undefined;
+
+	            try {
+	                for (var _iterator2 = code.values()[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+	                    var item = _step2.value;
+
+	                    self.open_code.add(item);
+	                }
+	                // 更新获奖接口
+	            } catch (err) {
+	                _didIteratorError2 = true;
+	                _iteratorError2 = err;
+	            } finally {
+	                try {
+	                    if (!_iteratorNormalCompletion2 && _iterator2.return) {
+	                        _iterator2.return();
+	                    }
+	                } finally {
+	                    if (_didIteratorError2) {
+	                        throw _iteratorError2;
+	                    }
+	                }
+	            }
+
+	            self.updateOpenCode && self.updateOpenCode.call(self, code);
+	        }
+
+	        /**
+	         * [toggleCodeActive 号码选中取消]
+	         * @param {object} e [dom对象]
+	         */
+
+	    }, {
+	        key: 'toggleCodeActive',
+	        value: function toggleCodeActive(e) {
+	            var self = this;
+	            var $cur = (0, _jquery2.default)(e.currentTarget);
+	            $cur.toggleClass('btn-boll-active');
+	            self.getCount();
+	        }
+
+	        /**
+	         * [changePlayNav 切换玩法]
+	         * @param {*} e 
+	         */
+
+	    }, {
+	        key: 'changePlayNav',
+	        value: function changePlayNav(e) {
+	            var self = this;
+	            var $cur = (0, _jquery2.default)(e.currentTarget);
+	            $cur.addClass('active').siblings().removeClass('active'); // 玩法导航样式切换
+	            self.cur_play = $cur.attr('desc').toLowerCase();
+	            (0, _jquery2.default)('#zx_sm span').html(self.play_list.get(self.cur_play).tip);
+	            (0, _jquery2.default)('.boll-list .btn-boll').removeClass('btn-boll-active'); // 清空操作区已选号码样式
+	            self.getCount();
+	        }
+
+	        /**
+	         * [assistHandle 操作区快捷选号]
+	         * @param {*} e 
+	         */
+
+	    }, {
+	        key: 'assistHandle',
+	        value: function assistHandle(e) {
+	            var self = this;
+	            var $cur = (0, _jquery2.default)(e.currentTarget);
+	            var index = $cur.index();
+
+	            e.preventDefault();
+	            (0, _jquery2.default)('.boll-list .btn-boll').removeClass('btn-boll-active'); // 清除
+
+	            if (index === 0) {
+	                // 全选
+	                (0, _jquery2.default)('.boll-list .btn-boll').addClass('btn-boll-active');
+	            }
+	            if (index === 1) {
+	                // 大
+	                (0, _jquery2.default)('.boll-list .btn-boll').each(function (i, t) {
+	                    if (t.textContent - 5 > 0) {
+	                        (0, _jquery2.default)(t).addClass('btn-boll-active');
 	                    }
 	                });
+	            }
+	            if (index === 2) {
+	                // 小
+	                (0, _jquery2.default)('.boll-list .btn-boll').each(function (i, t) {
+	                    if (t.textContent - 6 < 0) {
+	                        (0, _jquery2.default)(t).addClass('btn-boll-active');
+	                    }
+	                });
+	            }
+	            if (index === 3) {
+	                // 奇
+	                (0, _jquery2.default)('.boll-list .btn-boll').each(function (i, t) {
+	                    if (t.textContent % 2 == 1) {
+	                        (0, _jquery2.default)(t).addClass('btn-boll-active');
+	                    }
+	                });
+	            }
+	            if (index === 4) {
+	                // 偶
+	                (0, _jquery2.default)('.boll-list .btn-boll').each(function (i, t) {
+	                    if (t.textContent % 2 == 0) {
+	                        (0, _jquery2.default)(t).addClass('btn-boll-active');
+	                    }
+	                });
+	            }
+
+	            self.getCount();
+	        }
+
+	        /**
+	         * [getName 获取当前彩票名称]
+	         */
+
+	    }, {
+	        key: 'getName',
+	        value: function getName() {
+	            return this.name;
+	        }
+
+	        /**
+	         * [addCode 添加号码]
+	         */
+
+	    }, {
+	        key: 'addCode',
+	        value: function addCode() {
+	            var self = this;
+	            var $active = (0, _jquery2.default)('.boll-list .btn-boll-active').text().match(/\d{2}/g); // 数组对象
+	            var active = $active ? $active.length : 0;
+	            var count = self.computeCount(active, self.cur_play);
+	            if (count) {
+	                self.addCodeItem($active.join(''), self.cur_play, self.play_list.get(self.cur_play).name, count);
+	            }
+	        }
+
+	        /**
+	         * [addCodeItem 添加单次号码]
+	         * @param {string} code      [奖号]
+	         * @param {string} type      [玩法类型]
+	         * @param {string} typeName  [类型名称]
+	         * @param {number} count     [注数]
+	         */
+
+	    }, {
+	        key: 'addCodeItem',
+	        value: function addCodeItem(code, type, typeName, count) {
+	            var self = this;
+	            var tpl = '\n            <li codes="' + type + '|' + code + '" bonus="' + count * 2 + '" count="' + count + '">\n                <div class="code">\n                    <b>' + typeName + (count > 1 ? '复式' : '单式') + '</b>\n                    <b class="em">' + code + '</b>\n                    [' + count + '\u6CE8, <em class="code-list-money">' + count * 2 + '</em>\u5143]\n                </div>\n            </li>\n        ';
+	            (0, _jquery2.default)(self.cart_el).append(tpl);
+	            self.getTotal();
+	        }
+	    }, {
+	        key: 'getCount',
+	        value: function getCount() {
+	            var self = this;
+	            var active = (0, _jquery2.default)('.boll-list .btn-boll-active').length;
+	            var count = self.computeCount(active, self.cur_play);
+	            var range = self.computeBonus(active, self.cur_play);
+	            var money = count * 2;
+	            var win1 = range[0] - money; // 最小盈利
+	            var win2 = range[1] - money; // 最大盈利
+	            var tpl = void 0;
+	            var c1 = win1 < 0 && win2 < 0 ? Math.abs(win1) : win1; // abs()方法返回数的绝对值
+	            var c2 = win1 < 0 && win2 < 0 ? Math.abs(win2) : win2;
+
+	            if (count === 0) {
+	                tpl = '\u60A8\u9009\u4E86 <b class="red">' + count + '</b> \u6CE8\uFF0C\u5171 <b class="red">' + count * 2 + '</b> \u5143';
+	            } else if (range[0] === range[1]) {
+	                tpl = '\u60A8\u9009\u4E86 <b class="red">' + count + '</b> \u6CE8\uFF0C\u5171 <b class="red">' + count * 2 + '</b> \u5143 \n            <em>\u82E5\u4E2D\u5956\uFF0C\u5956\u91D1\uFF1A<strong class="red">' + range[0] + '</strong> \u5143\uFF0C\u60A8\u5C06' + (win1 >= 0 ? '盈利' : '亏损') + ' <strong class="' + (win1 >= 0 ? 'red' : 'green') + '">' + Math.abs(win1) + '</strong> \u5143</em>';
+	            } else {
+	                tpl = '\u60A8\u9009\u4E86 <b class="red">' + count + '</b> \u6CE8\uFF0C\u5171 <b class="red">' + count * 2 + '</b> \u5143 \n            <em>\u82E5\u4E2D\u5956\uFF0C\u5956\u91D1\uFF1A<strong class="red">' + range[0] + '</strong> \u81F3 <strong class="red">' + range[1] + '</strong> \u5143\uFF0C\u60A8\u5C06' + (win1 < 0 && win2 < 0 ? '亏损' : '盈利') + ' <strong class="' + (win1 >= 0 ? 'red' : 'green') + '">' + c1 + '</strong> \u81F3 <strong class="' + (win2 >= 0 ? 'red' : 'green') + '">' + c2 + '</strong> \u5143</em>';
+	            }
+
+	            (0, _jquery2.default)('.sel_info').html(tpl);
+	        }
+
+	        /**
+	         * [getTotal 计算所有金额]
+	         */
+
+	    }, {
+	        key: 'getTotal',
+	        value: function getTotal() {
+	            var self = this;
+	            (0, _jquery2.default)('.codelist li').each(function (index, item) {
+	                count += (0, _jquery2.default)(item).attr('count') * 1;
 	            });
+	            (0, _jquery2.default)('#count').text(count);
+	            (0, _jquery2.default)('#money').text(count * 2);
+	        }
+
+	        /**
+	         * [getRandom 生成随机数]
+	         * @param {number} num [要生成的位数]
+	         */
+
+	    }, {
+	        key: 'getRandom',
+	        value: function getRandom(num) {
+	            var arr = [],
+	                index = void 0;
+	            var number = Array.from(this.number); // 将set集合转化为数组
+	            while (num--) {
+	                index = Number.parseInt(Math.random() * number.length);
+	                arr.push(number[index]);
+	                number.splice(index, 1);
+	            }
+	            return arr.join('');
+	        }
+
+	        /**
+	         * [getRandomCode 添加随机号码]
+	         * @param {*} e 
+	         */
+
+	    }, {
+	        key: 'getRandomCode',
+	        value: function getRandomCode(e) {
+	            e.preventDefault();
+	            var self = this;
+	            var num = e.currentTarget.attr('count');
+	            var play = this.cur_play.match(/\d+/g)[0];
+
+	            if (num === '0') {
+	                (0, _jquery2.default)(self.cart_el).html('');
+	            } else {
+	                for (var i = 0; i < num; i++) {
+	                    self.addCodeItem(self.getRandom(play), self.cur_play, self.play_list.get(self.cur_play).name, 1);
+	                }
+	            }
 	        }
 	    }]);
 
-	    return Interface;
+	    return Base;
 	}();
 
-	exports.default = Interface;
+	exports.default = Base;
 
 /***/ }),
-/* 304 */
+/* 301 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(module) {"use strict";
@@ -18868,6 +18942,326 @@
 		return jQuery;
 	});
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(295)(module)))
+
+/***/ }),
+/* 302 */
+/***/ (function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var Timer = function () {
+	    function Timer() {
+	        _classCallCheck(this, Timer);
+	    }
+
+	    _createClass(Timer, [{
+	        key: 'countdown',
+	        value: function countdown(end, update, handle) {
+	            var self = this,
+	                now = new Date().getTime();
+	            // 如果超出截止时间
+	            if (now - end) {
+	                handle.call(self);
+	            } else {
+	                var last_time = end - now; // 剩余时间
+	                // 时间单位
+	                var px_s = 1000;
+	                var px_m = px_s * 60;
+	                var px_h = px_m * 60;
+	                var px_d = px_h * 24;
+	                // 剩余时间转换
+	                var d = Math.floor(last_time / px_d);
+	                var h = Math.floor((last_time - d * px_d) / px_h);
+	                var m = Math.floor((last_time - d * px_d - h * px_h) / px_m);
+	                var s = Math.floor((last_time - d * px_d - h * px_h - m * px_m) / px_s);
+	                var r = [];
+	                if (d > 0) {
+	                    r.push('<em>' + d + '</em>\u5929');
+	                }
+	                if (r.length || h > 0) {
+	                    r.push('<em>' + h + '</em>\u65F6');
+	                }
+	                if (r.length || m > 0) {
+	                    r.push('<em>' + m + '</em>\u5206');
+	                }
+	                if (r.length || s > 0) {
+	                    r.push('<em>' + s + '</em>\u79D2');
+	                }
+	                // 拼接输出语句
+	                self.last_time = r.join('');
+	                update.call(self, r.join(''));
+	                // 倒计时
+	                setTimeout(function () {
+	                    self.countdown(end, update, handle);
+	                }, 1000);
+	            }
+	        }
+	    }]);
+
+	    return Timer;
+	}();
+
+	exports.default = Timer;
+
+/***/ }),
+/* 303 */
+/***/ (function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var Calculate = function () {
+	    function Calculate() {
+	        _classCallCheck(this, Calculate);
+	    }
+
+	    _createClass(Calculate, [{
+	        key: 'computeCount',
+
+	        /**
+	         * [computeCount 计算注数]
+	         * @param {number} active    [选中的号码]
+	         * @param {string} play_name [玩法标识]
+	         * @return {number} count    [注数]
+	         */
+	        value: function computeCount(active, play_name) {
+	            var count = 0;
+	            var exist = this.play_list.has(play_name);
+	            var arr = new Array(active).fill(0);
+
+	            if (exist && play_name.at(0) === 'r') {
+	                count = Calculate.combine(arr, play_name.split('')[1]); // combine是静态方法
+	            }
+	            return count;
+	        }
+
+	        /**
+	         * [computeBonus 奖金范围预测]
+	         * @param {number} active    [选中的号码]
+	         * @param {string} play_name [玩法标识]
+	         * @return {array}           [奖金范围]
+	         */
+
+	    }, {
+	        key: 'computeBonus',
+	        value: function computeBonus(active, play_name) {
+	            var self = this;
+	            var play = play_name.split('');
+	            var arr = new Array(play[1] * 1).fill(0);
+	            var min = void 0,
+	                max = void 0;
+	            if (play[0] === 'r') {
+	                var min_active = 5 - (11 - active); // 最少命中数
+	                if (min_active > 0) {
+	                    if (min_active - play[1] >= 0) {
+	                        arr = new Array(min_active).fill(0);
+	                        min = Calculate.combine(arr, play[1]).length; // combine返回的是数组，长度是注数
+	                    } else {
+	                        if (play[1] - 5 > 0 && active - play[1] >= 0) {
+	                            arr = new Array(active - 5).fill(0);
+	                            min = Calculate.combine(arr, play[1] - 5).length;
+	                        } else {
+	                            min = active - play[1] > -1 ? 1 : 0;
+	                        }
+	                    }
+	                } else {
+	                    min = active - play[1] > -1 ? 1 : 0;
+	                }
+
+	                var max_active = Math.min(active, 5);
+	                // 任选5以上
+	                if (play[1] - 5 > 0) {
+	                    if (active - play[1] >= 0) {
+	                        arr = new Array(active - 5).fill(0);
+	                        max = Calculate.combine(arr, play[1] - 5).length;
+	                    } else {
+	                        max = 0;
+	                    }
+	                } else if (play[1] - 5 < 0) {
+	                    // 任选5以下
+	                    arr = new Array(Math.min(active, 5)).fill(0);
+	                    max = Calculate.combine(arr, play[1]).length;
+	                } else {
+	                    // 任选5
+	                    max = 1;
+	                }
+	            }
+	            // 将注数转换为金额
+	            return [min, max].map(function (item) {
+	                return item * self.play_list.get(play_name).bonus;
+	            });
+	        }
+
+	        /**
+	         * [combine 组合运算]
+	         * @param {array} arr   [参与组合运算的数组]
+	         * @param {number} size [组合运算的基数]
+	         * @return {array}      [运算后的结果，数组长度就是计算注数]
+	         */
+
+	    }], [{
+	        key: 'combine',
+	        value: function combine(arr, size) {
+	            var allResult = [];
+
+	            (function f(arr, size, result) {
+	                var arrLen = arr.length;
+	                if (size > arrLen) {
+	                    return;
+	                }
+	                if (size === arrLen) {
+	                    allResult.push([].concat(result, arr));
+	                } else {
+	                    for (var i = 0; i < arrLen; i++) {
+	                        var newResult = [].concat(result);
+	                        newResult.push(arr[i]);
+	                        if (size === 1) {
+	                            allResult.push(newResult);
+	                        } else {
+	                            var newArr = [].concat(arr);
+	                            newArr.splice(0, i + 1);
+	                            f(newArr, size - 1, newResult);
+	                        }
+	                    }
+	                }
+	            })(arr, size, []);
+	        }
+	    }]);
+
+	    return Calculate;
+	}();
+
+	exports.default = Calculate;
+
+/***/ }),
+/* 304 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _jquery = __webpack_require__(301);
+
+	var _jquery2 = _interopRequireDefault(_jquery);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var Interface = function () {
+	    function Interface() {
+	        _classCallCheck(this, Interface);
+	    }
+
+	    _createClass(Interface, [{
+	        key: 'getOmit',
+
+	        /**
+	         * [getOmit 获取遗漏数据]
+	         * @param {string} issue [当前期号]
+	         */
+	        value: function getOmit(issue) {
+	            var self = this;
+	            return new Promise(function (result, reject) {
+	                _jquery2.default.ajax({
+	                    url: '/get/omit',
+	                    data: {
+	                        issue: issue
+	                    },
+	                    dataType: 'json',
+	                    success: function success(res) {
+	                        self.setOmit(res.data);
+	                        resolve.call(self, res);
+	                    },
+	                    error: function error(err) {
+	                        reject.call(err);
+	                    }
+	                });
+	            });
+	        }
+	        /**
+	         * [getOpenCode 获取开奖号码]
+	         * @param {string} issue [当前期号]
+	         */
+
+	    }, {
+	        key: 'getOpenCode',
+	        value: function getOpenCode(issue) {
+	            var self = this;
+	            return new Promise(function (result, reject) {
+	                _jquery2.default.ajax({
+	                    url: '/get/opencode',
+	                    data: {
+	                        issue: issue
+	                    },
+	                    dataType: 'json',
+	                    success: function success(res) {
+	                        self.setOpenCode(res.data);
+	                        resolve.call(self, res);
+	                    },
+	                    error: function error(err) {
+	                        reject.call(err);
+	                    }
+	                });
+	            });
+	        }
+	        /**
+	         * [getOpenCode 获取当前状态]
+	         * @param {string} issue [当前期号]
+	         */
+
+	    }, {
+	        key: 'getState',
+	        value: function getState(issue) {
+	            var self = this;
+	            return new Promise(function (result, reject) {
+	                _jquery2.default.ajax({
+	                    url: '/get/state',
+	                    data: {
+	                        issue: issue
+	                    },
+	                    dataType: 'json',
+	                    success: function success(res) {
+	                        resolve.call(self, res);
+	                    },
+	                    error: function error(err) {
+	                        reject.call(err);
+	                    }
+	                });
+	            });
+	        }
+	    }]);
+
+	    return Interface;
+	}();
+
+	exports.default = Interface;
+
+/***/ }),
+/* 305 */
+/***/ (function(module, exports) {
+
+	"use strict";
 
 /***/ })
 /******/ ]);

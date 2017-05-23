@@ -1,0 +1,4 @@
+{
+    let weakList = new WeakSet();
+    
+}
