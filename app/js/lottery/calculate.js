@@ -11,7 +11,7 @@ class Calculate {
         const arr = new Array(active).fill(0);
 
         if(exist && play_name.at(0)==='r') {
-            count = Calculate.combine(arr, play_name.split('')[1]); // combine是静态方法
+            count = Calculate.combine(arr, play_name.split('')[1]).length; // combine是静态方法
         }
         return count;
     }
@@ -95,6 +95,7 @@ class Calculate {
                 }
             }
         })(arr, size, []);
+        return allResult;
     }
 }
 

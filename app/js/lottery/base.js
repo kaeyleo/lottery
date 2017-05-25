@@ -172,7 +172,7 @@ class Base {
         let active = $active?$active.length:0;
         let count = self.computeCount(active, self.cur_play);
         if(count) {
-            self.addCodeItem($active.join(''), self.cur_play, self.play_list.get(self.cur_play).name, count);
+            self.addCodeItem($active.join(' '), self.cur_play, self.play_list.get(self.cur_play).name, count);
         }
     }
 
@@ -228,7 +228,7 @@ class Base {
      * [getTotal 计算所有金额]
      */
     getTotal() {
-        let self = this;
+        let count = 0;
         $('.codelist li').each(function(index, item) {
             count += $(item).attr('count') * 1;
         });
@@ -258,7 +258,7 @@ class Base {
     getRandomCode(e) {
         e.preventDefault();
         let self = this;
-        let num = e.currentTarget.attr('count');
+        let num = e.currentTarget.getAttribute('count');
         let play = this.cur_play.match(/\d+/g)[0];
 
         if(num==='0') {

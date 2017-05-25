@@ -3,7 +3,7 @@ class Timer {
         const self = this,
               now = new Date().getTime();
         // 如果超出截止时间
-        if(now-end) {
+        if(now-end>0) {
             handle.call(self);
         }else{
             let last_time = end - now; // 剩余时间

@@ -59,9 +59,10 @@
 
 	var _lottery2 = _interopRequireDefault(_lottery);
 
-	__webpack_require__(305);
-
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var syy = new _lottery2.default();
+	console.log(syy);
 
 /***/ }),
 /* 2 */
@@ -9174,7 +9175,7 @@
 	            var active = $active ? $active.length : 0;
 	            var count = self.computeCount(active, self.cur_play);
 	            if (count) {
-	                self.addCodeItem($active.join(''), self.cur_play, self.play_list.get(self.cur_play).name, count);
+	                self.addCodeItem($active.join(' '), self.cur_play, self.play_list.get(self.cur_play).name, count);
 	            }
 	        }
 
@@ -9226,7 +9227,7 @@
 	    }, {
 	        key: 'getTotal',
 	        value: function getTotal() {
-	            var self = this;
+	            var count = 0;
 	            (0, _jquery2.default)('.codelist li').each(function (index, item) {
 	                count += (0, _jquery2.default)(item).attr('count') * 1;
 	            });
@@ -9263,7 +9264,7 @@
 	        value: function getRandomCode(e) {
 	            e.preventDefault();
 	            var self = this;
-	            var num = e.currentTarget.attr('count');
+	            var num = e.currentTarget.getAttribute('count');
 	            var play = this.cur_play.match(/\d+/g)[0];
 
 	            if (num === '0') {
@@ -19140,7 +19141,7 @@
 	            var self = this,
 	                now = new Date().getTime();
 	            // 如果超出截止时间
-	            if (now - end) {
+	            if (now - end > 0) {
 	                handle.call(self);
 	            } else {
 	                var last_time = end - now; // 剩余时间
@@ -19217,7 +19218,7 @@
 	            var arr = new Array(active).fill(0);
 
 	            if (exist && play_name.at(0) === 'r') {
-	                count = Calculate.combine(arr, play_name.split('')[1]); // combine是静态方法
+	                count = Calculate.combine(arr, play_name.split('')[1]).length; // combine是静态方法
 	            }
 	            return count;
 	        }
@@ -19312,6 +19313,7 @@
 	                    }
 	                }
 	            })(arr, size, []);
+	            return allResult;
 	        }
 	    }]);
 
@@ -19354,7 +19356,7 @@
 	         */
 	        value: function getOmit(issue) {
 	            var self = this;
-	            return new Promise(function (result, reject) {
+	            return new Promise(function (resolve, reject) {
 	                _jquery2.default.ajax({
 	                    url: '/get/omit',
 	                    data: {
@@ -19380,7 +19382,7 @@
 	        key: 'getOpenCode',
 	        value: function getOpenCode(issue) {
 	            var self = this;
-	            return new Promise(function (result, reject) {
+	            return new Promise(function (resolve, reject) {
 	                _jquery2.default.ajax({
 	                    url: '/get/opencode',
 	                    data: {
@@ -19406,7 +19408,7 @@
 	        key: 'getState',
 	        value: function getState(issue) {
 	            var self = this;
-	            return new Promise(function (result, reject) {
+	            return new Promise(function (resolve, reject) {
 	                _jquery2.default.ajax({
 	                    url: '/get/state',
 	                    data: {
@@ -19428,12 +19430,6 @@
 	}();
 
 	exports.default = Interface;
-
-/***/ }),
-/* 305 */
-/***/ (function(module, exports) {
-
-	"use strict";
 
 /***/ })
 /******/ ]);
